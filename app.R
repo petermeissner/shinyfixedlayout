@@ -13,8 +13,32 @@ par(mar=c(0,0,0,0))
 # Define UI for application that draws a histogram
 ui <- 
   basicPage(
+    tags$head(
+      tags$script(src="scale_svg_text.js"),
+      tags$style(
+        "
+          svg {
+          display: block;
+          width: 100%;
+          max-height: 100%;
+          }
+          text {
+            fill: #222;
+          }
+         
+        }
+        
+        .wrapper {
+          margin: 30px auto;
+          width: 200px;
+          border: 10px solid #222;
+          padding: 20px;
+        }
+        "
+      )
+    ),
     tags$div(
-        style="border: 1px solid black; position: absolute; width:20%; height: 69%; top: 1%",
+        style = "border: 1px solid black; position: absolute; width:20%; height: 69%; top: 1%",
         plotOutput("distPlot", width = "100%", height = "100%")
       ),
     tags$div(
@@ -22,8 +46,32 @@ ui <-
       plotOutput("distPlot2", width = "100%", height = "100%")
     ),
     tags$div(
-      style="border: 1px solid black; position: absolute; width:79%; left: 21%; top: 1%; height: 69%;",
+      style="border: 1px solid black; position: absolute; width:59%; left: 21%; top: 1%; height: 69%;",
       plotOutput("distPlot3", width = "100%", height = "100%")
+    ),
+    tags$div(
+      style="border: 1px solid black; position: absolute; width:18%; left: 81%; top: 1%; height: 10%;",
+      div(
+        style="width:100%; height:100%",
+        tag(
+          "svg",
+          varArgs = list(tag("text", varArgs = list("Scale") ))
+        )
+      )
+    ),
+    tags$div(
+      style="border: 1px solid black; position: absolute; width:18%; left: 81%; top: 12%; height: 20%;",
+      div(
+        style="width:100%; height:100%",
+        tag(
+          "svg",
+          varArgs = list(tag("text", varArgs = list("text") ))
+        )
+      )
+    ),
+    tags$div(
+      style="border: 1px solid black; position: absolute; width:18%; left: 81%; top: 33%; height: 40%;",
+      uiOutput("time")
     ),
     tags$div(
       style="border: 1px solid black; position: absolute; left:61%; width:38%; top: 70%; height: 28%;",
@@ -73,6 +121,28 @@ server <- function(input, output) {
      # draw the histogram with the specified number of bins
      hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
    })
+   
+   output$time <- 
+     renderUI({
+       #invalidateLater(40000)
+       
+       div(
+         style="width:100%; height:100%",
+         tag(
+           "svg",
+           varArgs = 
+            list(
+              tag(
+                "text", 
+                varArgs = 
+                  list( 
+                    as.character(Sys.time(), "%H:%M:%S")
+                  ) 
+              ) 
+            )
+           )
+         )
+     })
 }
 
 # Run the application 
