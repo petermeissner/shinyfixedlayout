@@ -6,61 +6,63 @@
 #
 #    http://shiny.rstudio.com/
 #
+# @author Peter Meissner retep.meissner@gmail.com
+
+
+#### GLOBAL ####################################################################
 
 library(shiny)
-par(mar=c(0,0,0,0))
 
-# Define UI for application that draws a histogram
+
+
+
+#### UI ########################################################################
 ui <- 
   basicPage(
     tags$head(
       tags$script(src="scale_svg_text.js"),
-      tags$style(
-        "
-          svg {
-          display: block;
-          width: 100%;
-          max-height: 100%;
-          }
-          text {
-            fill: #222;
-          }
-         
-        }
-        
-        .wrapper {
-          margin: 30px auto;
-          width: 200px;
-          border: 10px solid #222;
-          padding: 20px;
-        }
-        "
-      )
+      tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
     ),
+    
+    # first histogram
     tags$div(
-        style = "border: 1px solid black; position: absolute; width:20%; height: 69%; top: 1%",
-        plotOutput("distPlot", width = "100%", height = "100%")
-      ),
-    tags$div(
-      style="border: 1px solid black; position: absolute; width:60%; top: 70%; height: 28%;",
-      plotOutput("distPlot2", width = "100%", height = "100%")
+      style = "width: 20%; height: 96%; top: 1%; left:  20%;",
+      class = "absolute",
+      plotOutput("hist_1", width = "100%", height = "100%")
     ),
+    
+    # second hsitogram
     tags$div(
-      style="border: 1px solid black; position: absolute; width:59%; left: 21%; top: 1%; height: 69%;",
-      plotOutput("distPlot3", width = "100%", height = "100%")
+      style="width: 57%; left: 41%; top: 1%; height: 96%;",
+      class = "absolute",
+      plotOutput("hist_2", width = "100%", height = "100%")
     ),
+    
+    
+    # scaled text 1 
     tags$div(
-      style="border: 1px solid black; position: absolute; width:18%; left: 81%; top: 1%; height: 10%;",
+      style="width: 18%; left: 1%; top: 1%; height: 20%;",
+      class = "absolute",
+      uiOutput("time")
+    ),
+    
+    # scaled text 2
+    tags$div(
+      style="width: 18%; left: 1%; top: 22%; height: 20%;",
+      class = "absolute",
       div(
         style="width:100%; height:100%",
         tag(
           "svg",
-          varArgs = list(tag("text", varArgs = list("Scale") ))
+          varArgs = list(tag("text", varArgs = list("Scale ") ))
         )
       )
     ),
+    
+    # scaled text 3
     tags$div(
-      style="border: 1px solid black; position: absolute; width:18%; left: 81%; top: 12%; height: 20%;",
+      style="width: 18%; left: 1%; top: 43%; height: 54%;",
+      class = "absolute",
       div(
         style="width:100%; height:100%",
         tag(
@@ -68,69 +70,43 @@ ui <-
           varArgs = list(tag("text", varArgs = list("text") ))
         )
       )
-    ),
-    tags$div(
-      style="border: 1px solid black; position: absolute; width:18%; left: 81%; top: 33%; height: 40%;",
-      uiOutput("time")
-    ),
-    tags$div(
-      style="border: 1px solid black; position: absolute; left:61%; width:38%; top: 70%; height: 28%;",
-      plotOutput("distPlot4", width = "100%", height = "100%")
     )
+    
   )
 
-# Define server logic required to draw a histogram
+
+
+
+#### SERVER ####################################################################
+
 server <- function(input, output) {
-   
-   output$distPlot <- renderPlot({
-     par(mar=c(0,0,0,0))
-      # generate bins based on input$bins from ui.R
+  
+  # histogram 1 
+  output$hist_1 <- 
+    renderPlot({
+      par(mar=c(0,0,0,0))
       x    <- faithful[, 2] 
       bins <- seq(min(x), max(x), length.out = 10)
-      
-      # draw the histogram with the specified number of bins
       hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
-   })
-   
-   output$distPlot3 <- renderPlot({
-     par(mar=c(0,0,0,0))
-     # generate bins based on input$bins from ui.R
-     x    <- faithful[, 2] 
-     bins <- seq(min(x), max(x), length.out = 10)
-     
-     # draw the histogram with the specified number of bins
-     hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
-   })
-   
-   output$distPlot4 <- renderPlot({
-     par(mar=c(0,0,0,0))
-     # generate bins based on input$bins from ui.R
-     x    <- faithful[, 2] 
-     bins <- seq(min(x), max(x), length.out = 10)
-     
-     # draw the histogram with the specified number of bins
-     hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
-   })
-   
-   output$distPlot2 <- renderPlot({
-     par(mar=c(0,0,0,0))
-     # generate bins based on input$bins from ui.R
-     x    <- faithful[, 2] 
-     bins <- seq(min(x), max(x), length.out = 10)
-     
-     # draw the histogram with the specified number of bins
-     hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
-   })
-   
-   output$time <- 
-     renderUI({
-       #invalidateLater(40000)
-       
-       div(
-         style="width:100%; height:100%",
-         tag(
-           "svg",
-           varArgs = 
+    })
+  
+  # histogram 2
+  output$hist_2 <- 
+    renderPlot({
+      par(mar=c(0,0,0,0))
+      x    <- faithful[, 2] 
+      bins <- seq(min(x), max(x), length.out = 10)
+      hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
+    })
+  
+  # text 3 
+  output$time <- 
+    renderUI({
+      div(
+        style="width:100%; height:100%",
+        tag(
+          "svg",
+          varArgs = 
             list(
               tag(
                 "text", 
@@ -140,11 +116,13 @@ server <- function(input, output) {
                   ) 
               ) 
             )
-           )
-         )
-     })
+        )
+      )
+    })
 }
 
-# Run the application 
+
+
+#### RUN APP ###################################################################
 shinyApp(ui = ui, server = server)
 

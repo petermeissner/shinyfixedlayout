@@ -1,4 +1,4 @@
-
+// initial resize 
 setTimeout(function() {
     $('svg').each(function() {
       var svg  = $(this);
@@ -20,7 +20,7 @@ setTimeout(function() {
   });
 }, 1000);
 
-
+// resize triggered by window resizing
 $( window ).resize(
   function() {
     $('svg').each(function() {
