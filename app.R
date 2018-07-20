@@ -76,9 +76,9 @@ ui <-
     ),
     
     # scaled text
-    scaled_text_output("This",  1, 20, 1, 20),
+    scaled_text_output("This",       1, 20, 1, 20),
     scaled_text_output("is scaled", 21, 61, 1, 20),
-    scaled_text_output("text", 62, 99, 1, 20)
+    scaled_text_output("text",      62, 99, 1, 20)
   )
 
 
