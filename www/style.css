@@ -19,7 +19,6 @@ text {
 .absolute {
   margin:10px;
   position: absolute; 
-  /*border: 1px solid silver; */
 }
 
 .absolute:hover {

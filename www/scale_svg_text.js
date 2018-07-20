@@ -7,8 +7,8 @@ setTimeout(function() {
       
       bbox.x      = Math.floor(bbox.x);
       bbox.y      = Math.floor(bbox.y);
-      bbox.width  = Math.floor(bbox.width);
-      bbox.heihgt = Math.floor(bbox.height);
+      bbox.width  = Math.max(Math.floor(bbox.width  + 10), 1);
+      bbox.heihgt = Math.max(Math.floor(bbox.height + 10), 1);
       
     svg.get(0).setAttribute(
       'viewBox', 
@@ -30,8 +30,8 @@ $( window ).resize(
       
       bbox.x      = Math.floor(bbox.x);
       bbox.y      = Math.floor(bbox.y);
-      bbox.width  = Math.floor(bbox.width);
-      bbox.heihgt = Math.floor(bbox.height);
+      bbox.width  = Math.floor(bbox.width  + 10 );
+      bbox.heihgt = Math.floor(bbox.height + 10 );
       
     svg.get(0).setAttribute(
       'viewBox', 

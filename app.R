@@ -1,11 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 # @author Peter Meissner retep.meissner@gmail.com
 
 
@@ -13,114 +5,89 @@
 
 library(shiny)
 
+# absolute box 
+absolute_box <- function(text, x1, x2, y1, y2){
+  tags$div(
+    style =
+      sprintf(
+        fmt = "left: %s%%; top: %s%%; width: %s%%; height: %s%%;", 
+        x1, y1, x2 - x1, y2 - y1
+      ),
+    class = "absolute",
+    div(
+      style = "width: 100%; height: 100%",
+      text
+    )
+  )
+}
 
+# scaled text function
+scaled_text_output <- function(text, x1, x2, y1, y2){
+  absolute_box(
+    tag("svg", varArgs = list(tag("text", varArgs = list(text)))),
+    x1, x2, y1, y2
+  )
+}
+
+# a simple histogram plotting function
+my_histogram <- function(){
+  # save and restore plot parameter
+  par_mar_tmp <- par("mar")
+  on.exit(
+    par(mar = par_mar_tmp)
+  )
+
+  # set plot parameter
+  par(mar  = c(0,0,0,0) )
+  
+  # plot
+  hist(
+    x      = faithful$waiting, 
+    breaks = seq(min(faithful$waiting), max(faithful$waiting), length.out = 10), 
+    col    = 'grey20',
+    border = 'white', 
+    main   = NULL, 
+    xlab   = NULL, 
+    ylab   = NULL, 
+    axes   = FALSE
+  )
+}
 
 
 #### UI ########################################################################
 ui <- 
   basicPage(
+    
+    # including Javascript code and a style sheet
     tags$head(
-      tags$script(src="scale_svg_text.js"),
-      tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+      tags$script(src = "scale_svg_text.js"),
+      tags$link(  rel = "stylesheet", type = "text/css", href = "style.css")
     ),
     
-    # first histogram
-    tags$div(
-      style = "width: 20%; height: 96%; top: 1%; left:  20%;",
-      class = "absolute",
-      plotOutput("hist_1", width = "100%", height = "100%")
+    # histograms
+    absolute_box(
+      plotOutput("hist_1", width = "100%", height = "100%"), 
+      x1 = 1, x2 = 20, y1 = 21, y2 = 99
+    ),
+
+    absolute_box(
+      plotOutput("hist_2", width = "100%", height = "100%"), 
+      x1 = 21, x2 = 99, y1 = 21, y2 = 99
     ),
     
-    # second hsitogram
-    tags$div(
-      style="width: 57%; left: 41%; top: 1%; height: 96%;",
-      class = "absolute",
-      plotOutput("hist_2", width = "100%", height = "100%")
-    ),
-    
-    
-    # scaled text 1 
-    tags$div(
-      style="width: 18%; left: 1%; top: 1%; height: 20%;",
-      class = "absolute",
-      uiOutput("time")
-    ),
-    
-    # scaled text 2
-    tags$div(
-      style="width: 18%; left: 1%; top: 22%; height: 20%;",
-      class = "absolute",
-      div(
-        style="width:100%; height:100%",
-        tag(
-          "svg",
-          varArgs = list(tag("text", varArgs = list("Scale ") ))
-        )
-      )
-    ),
-    
-    # scaled text 3
-    tags$div(
-      style="width: 18%; left: 1%; top: 43%; height: 54%;",
-      class = "absolute",
-      div(
-        style="width:100%; height:100%",
-        tag(
-          "svg",
-          varArgs = list(tag("text", varArgs = list("text") ))
-        )
-      )
-    )
-    
+    # scaled text
+    scaled_text_output("This",  1, 20, 1, 20),
+    scaled_text_output("is scaled", 21, 61, 1, 20),
+    scaled_text_output("text", 62, 99, 1, 20)
   )
-
-
 
 
 #### SERVER ####################################################################
 
 server <- function(input, output) {
-  
-  # histogram 1 
-  output$hist_1 <- 
-    renderPlot({
-      par(mar=c(0,0,0,0))
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = 10)
-      hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
-    })
-  
-  # histogram 2
-  output$hist_2 <- 
-    renderPlot({
-      par(mar=c(0,0,0,0))
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = 10)
-      hist(x, breaks = bins, col = 'grey20', border = 'white', main = NULL, xlab = NULL, ylab=NULL, axes =FALSE)
-    })
-  
-  # text 3 
-  output$time <- 
-    renderUI({
-      div(
-        style="width:100%; height:100%",
-        tag(
-          "svg",
-          varArgs = 
-            list(
-              tag(
-                "text", 
-                varArgs = 
-                  list( 
-                    as.character(Sys.time(), "%H:%M:%S")
-                  ) 
-              ) 
-            )
-        )
-      )
-    })
+  output$hist_1 <- renderPlot({my_histogram()})
+  output$hist_2 <- renderPlot({my_histogram()})
 }
-
 
 
 #### RUN APP ###################################################################
